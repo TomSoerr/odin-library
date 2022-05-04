@@ -1,8 +1,11 @@
+/* page layout and color */
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 
 :root {
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
@@ -11,6 +14,11 @@
   --text-col: #343a40;
   --border-col: #ced4da;
   --box-shadow-col: #343a405f;
+  --focus-col: rgba(0, 0, 255, 0.329);
+}
+
+::selection {
+  background-color: var(--focus-col);
 }
 
 body {
@@ -22,13 +30,17 @@ body {
   display: grid;
   grid-template: auto 1fr / 1fr;
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   background-color: var(--col-1);
 }
 
+/* header */
+
 #header {
   display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
   align-items: center;
   padding: 1rem;
   font-weight: 700;
@@ -42,18 +54,136 @@ body {
   line-height: 1em;
 }
 
+#header #add {
+  appearance: none;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background-color: var(--text-col);
+  color: var(--col-2);
+}
+
+#header #add:focus-visible {
+  background-color: var(--focus-col);
+}
+
+/* content container */
+
 #content {
-  background-color: violet;
+  display: grid;
+  align-content: start;
+  align-items: end;
+  grid-template-columns: 7rem 1fr 1fr 1fr 7rem;
+  padding: 2rem;
   margin: 5vw auto;
   width: min(90vw, 80rem);
   border-radius: 2rem;
-  padding: 2rem;
+  background-color: var(--col-2);
+  border: solid thin var(--border-col);
 }
 
-#content-header,
-.item {
-  display: grid;
-  grid-template-columns: 5rem 1fr 1fr 1fr 8rem;
+/* content header with sort buttons */
+
+#content > div:nth-child(-n+5) {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+#content label {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#content label + button {
+  position: relative;
+  appearance: none;
+  cursor: pointer;
+  height: 1.2em;
+  width: 1.2em;
+  border-radius: 0.2em;
+  background-color: var(--col-2);
+  border: none;
+  outline: none;
+}
+
+#content label + button:focus-visible {
+  background-color: var(--focus-col);
+}
+
+#content label + button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.2s ease-in-out;
+
+  background-color: var(--border-col);
+  clip-path: polygon(20% 50%, 80% 80%, 80% 20%);
+}
+
+#content label + button.checked-1::before {
+  transform: rotate(-90deg);
+  background-color: var(--text-col);
+}
+
+#content label + button.checked-2::before {
+  transform: rotate(90deg);
+  background-color: var(--text-col);
+}
+
+/* content parting line */
+
+#content hr {
+  grid-column: span 5;
+  margin: 1em 0;
+  border-style: solid;
+  border-width: thin;
+  border-color: var(--border-col);
 }
 
 
+/* content item status checkbox */
+
+#content input[type="checkbox"] {
+  position: relative;
+  height: 1.5em;
+  width: 1.5em;
+  border-radius: 1em;
+  appearance: none;
+  border: solid thin var(--text-col);
+  outline: none;
+}
+
+#content input[type="checkbox"]:focus-visible {
+  background-color: var(--focus-col);
+}
+
+#content input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--text-col);
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+  transform: scale(0);
+}
+
+#content input[type="checkbox"]:checked::before {
+  transform: scale(0.75);
+}
+
+#content .test {
+  display: contents;
+
+}
