@@ -14,7 +14,7 @@
   --text-col: #343a40;
   --border-col: #ced4da;
   --box-shadow-col: #343a405f;
-  --focus-col: rgba(0, 0, 255, 0.329);
+  --focus-col: rgba(0, 0, 255, 0.242);
 }
 
 ::selection {
@@ -78,7 +78,7 @@ body {
   display: grid;
   align-content: start;
   align-items: end;
-  grid-template-columns: 7rem 1fr 1fr 1fr 7rem;
+  grid-template-columns: 5rem 1fr 1fr 1fr 5rem;
   padding: 2rem;
   margin: 5vw auto;
   width: min(90vw, 80rem);
@@ -124,7 +124,6 @@ body {
   width: 100%;
   height: 100%;
   transition: all 0.2s ease-in-out;
-
   background-color: var(--border-col);
   clip-path: polygon(20% 50%, 80% 80%, 80% 20%);
 }
@@ -152,7 +151,8 @@ body {
 
 /* content item status checkbox */
 
-#content input[type="checkbox"] {
+#content .book input[type="checkbox"],
+#add-overlay #add-form input[type="checkbox"] {
   position: relative;
   height: 1.5em;
   width: 1.5em;
@@ -162,11 +162,13 @@ body {
   outline: none;
 }
 
-#content input[type="checkbox"]:focus-visible {
+#content .book input[type="checkbox"]:focus-visible,
+#add-overlay #add-form input[type="checkbox"]:focus-visible {
   background-color: var(--focus-col);
 }
 
-#content input[type="checkbox"]::before {
+#content .book input[type="checkbox"]::before,
+#add-overlay #add-form input[type="checkbox"]::before {
   content: "";
   position: absolute;
   top: 0;
@@ -179,11 +181,104 @@ body {
   transform: scale(0);
 }
 
-#content input[type="checkbox"]:checked::before {
+#content .book input[type="checkbox"]:checked::before,
+#add-overlay #add-form input[type="checkbox"]:checked::before {
   transform: scale(0.75);
 }
 
-#content .test {
-  display: contents;
-
+#content .book button {
+  appearance: none;
+  cursor: pointer;
+  height: 1.5em;
+  background-color: rgb(255, 120, 108);
+  border-radius: 0.2rem;
+  border: none;
+  outline: none;
 }
+
+#content .book button:focus-visible {
+  background-color: var(--focus-col);
+}
+
+#content .book {
+  display: contents;
+}
+
+
+/* add book overlay */
+
+#add-overlay {
+  display: grid;
+
+  /* display: none; */
+
+  place-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+
+  height: 100vh;
+  color: var(--text-col);
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+#add-overlay #add-form {
+  display: grid;
+  border: var(--border-col) solid thin;
+  background-color: var(--col-2);
+  padding: 2rem;
+  border-radius: 2rem;
+}
+
+#add-overlay #add-form > label:not(:first-child),
+#add-overlay #add-form button,
+#add-overlay #add-form div {
+  margin-top: 1rem;
+}
+
+#add-overlay #add-form label {
+  font-weight: bold;
+}
+
+#add-overlay #add-form input[type="text"] {
+  box-sizing: content-box;
+  appearance: none;
+  border: none;
+  outline: none;
+  border-bottom: var(--border-col) solid thin;
+  background-color: var(--col-2);
+  padding: 0.2rem 0;
+  font-size: 1rem;
+  color: var(--text-col);
+}
+
+#add-overlay #add-form div {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#add-overlay #add-form input[type="checkbox"] {
+  height: 1rem;
+  width: 1rem;
+}
+
+#add-overlay #add-form button {
+  appearance: none;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  border: var(--border-col) thin solid;
+  border-radius: 0.2rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 1rem;
+  background-color: var(--col-2);
+  color: var(--text-col);
+}
+
+#add-overlay #add-form button:focus-visible {
+  border-color: var(--text-col);
+}
+
