@@ -6,7 +6,6 @@
   box-sizing: border-box;
 }
 
-
 :root {
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
   --col-1: #f8f9fa;
@@ -15,6 +14,7 @@
   --border-col: #ced4da;
   --box-shadow-col: #343a405f;
   --focus-col: rgba(0, 0, 255, 0.242);
+  --red: rgb(255, 120, 108);
 }
 
 ::selection {
@@ -77,8 +77,7 @@ body {
 #content {
   display: grid;
   align-content: start;
-  align-items: end;
-  grid-template-columns: 5rem 1fr 1fr 1fr 5rem;
+  grid-template-columns: minmax(1fr, 5rem) 1fr 1fr 1fr minmax(1fr, 5rem);
   padding: 2rem;
   margin: 5vw auto;
   width: min(90vw, 80rem);
@@ -87,7 +86,7 @@ body {
   border: solid thin var(--border-col);
 }
 
-/* content header with sort buttons */
+/* booklist header with sort buttons */
 
 #content > div:nth-child(-n+5) {
   display: flex;
@@ -138,7 +137,7 @@ body {
   background-color: var(--text-col);
 }
 
-/* content parting line */
+/* book parting line / hr */
 
 #content hr {
   grid-column: span 5;
@@ -148,15 +147,15 @@ body {
   border-color: var(--border-col);
 }
 
-
-/* content item status checkbox */
+/* book status/read checkbox */
 
 #content .book input[type="checkbox"],
 #add-overlay #add-form input[type="checkbox"] {
   position: relative;
+  cursor: pointer;
   height: 1.5em;
   width: 1.5em;
-  border-radius: 1em;
+  border-radius: 50%;
   appearance: none;
   border: solid thin var(--text-col);
   outline: none;
@@ -186,11 +185,13 @@ body {
   transform: scale(0.75);
 }
 
+/* book delete button */
+
 #content .book button {
   appearance: none;
   cursor: pointer;
   height: 1.5em;
-  background-color: rgb(255, 120, 108);
+  background-color: var(--red);
   border-radius: 0.2rem;
   border: none;
   outline: none;
@@ -200,42 +201,77 @@ body {
   background-color: var(--focus-col);
 }
 
+/* book container to delete an item without the need to rerender the list */
+
 #content .book {
   display: contents;
 }
 
-
 /* add book overlay */
 
 #add-overlay {
-  display: grid;
-
-  /* display: none; */
-
+  display: none;
   place-items: center;
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-
   height: 100vh;
   color: var(--text-col);
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
   z-index: 2;
 }
 
+/* add book form */
+
 #add-overlay #add-form {
   display: grid;
+  position: relative;
   border: var(--border-col) solid thin;
   background-color: var(--col-2);
-  padding: 2rem;
+  padding: 3rem;
   border-radius: 2rem;
 }
 
+/* cancel button */
+
+#add-overlay #add-form #cancel-book {
+  position: absolute;
+  appearance: none;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  height: 1.5em;
+  width: 1.5em;
+  border-radius: 50%;
+  top: 0.8rem;
+  right: 0.8rem;
+  background-color: var(--red);
+  overflow: hidden;
+}
+
+#add-overlay #add-form #cancel-book::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--text-col);
+  transform: scale(0.5);
+  clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+}
+
+#add-overlay #add-form #cancel-book:focus-visible {
+  background-color: var(--focus-col);
+}
+
+/* add book text input */
+
 #add-overlay #add-form > label:not(:first-child),
-#add-overlay #add-form button,
+#add-overlay #add-form #add-book,
 #add-overlay #add-form div {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 #add-overlay #add-form label {
@@ -254,18 +290,24 @@ body {
   color: var(--text-col);
 }
 
+#add-overlay #add-form input[type="text"]::placeholder {
+  color: var(--red);
+}
+
 #add-overlay #add-form div {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
 }
+
+/* book status/read checkbox */
 
 #add-overlay #add-form input[type="checkbox"] {
   height: 1rem;
   width: 1rem;
 }
 
-#add-overlay #add-form button {
+#add-overlay #add-form #add-book {
   appearance: none;
   cursor: pointer;
   border: none;
@@ -278,7 +320,8 @@ body {
   color: var(--text-col);
 }
 
-#add-overlay #add-form button:focus-visible {
+#add-overlay #add-form #add-book:focus-visible,
+#add-overlay #add-form #add-book:hover {
   border-color: var(--text-col);
 }
 
