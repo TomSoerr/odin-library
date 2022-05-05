@@ -54,7 +54,7 @@ body {
   line-height: 1em;
 }
 
-#header #add {
+#header #show {
   appearance: none;
   outline: none;
   border: none;
@@ -77,7 +77,8 @@ body {
 #content {
   display: grid;
   align-content: start;
-  grid-template-columns: minmax(1fr, 5rem) 1fr 1fr 1fr minmax(1fr, 5rem);
+  grid-template-columns: auto 1fr 1fr 1fr auto;
+  gap: 0 1rem;
   padding: 2rem;
   margin: 5vw auto;
   width: min(90vw, 80rem);
@@ -86,7 +87,7 @@ body {
   border: solid thin var(--border-col);
 }
 
-/* booklist header with sort buttons */
+/* book list header with sort buttons */
 
 #content > div:nth-child(-n+5) {
   display: flex;
@@ -150,7 +151,8 @@ body {
 /* book status/read checkbox */
 
 #content .book input[type="checkbox"],
-#add-overlay #add-form input[type="checkbox"] {
+#overlay #form input[type="checkbox"] {
+  justify-self: center;
   position: relative;
   cursor: pointer;
   height: 1.5em;
@@ -162,12 +164,12 @@ body {
 }
 
 #content .book input[type="checkbox"]:focus-visible,
-#add-overlay #add-form input[type="checkbox"]:focus-visible {
+#overlay #form input[type="checkbox"]:focus-visible {
   background-color: var(--focus-col);
 }
 
 #content .book input[type="checkbox"]::before,
-#add-overlay #add-form input[type="checkbox"]::before {
+#overlay #form input[type="checkbox"]::before {
   content: "";
   position: absolute;
   top: 0;
@@ -181,7 +183,7 @@ body {
 }
 
 #content .book input[type="checkbox"]:checked::before,
-#add-overlay #add-form input[type="checkbox"]:checked::before {
+#overlay #form input[type="checkbox"]:checked::before {
   transform: scale(0.75);
 }
 
@@ -191,6 +193,7 @@ body {
   appearance: none;
   cursor: pointer;
   height: 1.5em;
+  padding: 0 0.5em;
   background-color: var(--red);
   border-radius: 0.2rem;
   border: none;
@@ -209,7 +212,7 @@ body {
 
 /* add book overlay */
 
-#add-overlay {
+#overlay {
   display: none;
   place-items: center;
   position: fixed;
@@ -224,7 +227,7 @@ body {
 
 /* add book form */
 
-#add-overlay #add-form {
+#overlay #form {
   display: grid;
   position: relative;
   border: var(--border-col) solid thin;
@@ -233,9 +236,15 @@ body {
   border-radius: 2rem;
 }
 
+#overlay #form > label:not(:first-child),
+#overlay #form #add,
+#overlay #form div {
+  margin-top: 1.5rem;
+}
+
 /* cancel button */
 
-#add-overlay #add-form #cancel-book {
+#overlay #form #close {
   position: absolute;
   appearance: none;
   cursor: pointer;
@@ -250,7 +259,7 @@ body {
   overflow: hidden;
 }
 
-#add-overlay #add-form #cancel-book::before {
+#overlay #form #close::before {
   content: '';
   position: absolute;
   top: 0;
@@ -262,52 +271,59 @@ body {
   clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
 }
 
-#add-overlay #add-form #cancel-book:focus-visible {
+#overlay #form #close:focus-visible {
   background-color: var(--focus-col);
 }
 
 /* add book text input */
 
-#add-overlay #add-form > label:not(:first-child),
-#add-overlay #add-form #add-book,
-#add-overlay #add-form div {
-  margin-top: 1.5rem;
-}
-
-#add-overlay #add-form label {
+#overlay #form label {
   font-weight: bold;
 }
 
-#add-overlay #add-form input[type="text"] {
+#overlay #form input[type="text"] {
+  position: relative;
   box-sizing: content-box;
   appearance: none;
   border: none;
   outline: none;
-  border-bottom: var(--border-col) solid thin;
-  background-color: var(--col-2);
+  width: 15rem;
   padding: 0.2rem 0;
   font-size: 1rem;
+  border-bottom: var(--border-col) solid thin;
+  background-color: var(--col-2);
   color: var(--text-col);
 }
 
-#add-overlay #add-form input[type="text"]::placeholder {
+#overlay #form  label + span {
+ position: relative;
+
+}
+#overlay #form  label + span::before {
+  content: attr(data-msg);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translateY(100%);
+  font-size: 0.8rem;
   color: var(--red);
+  z-index: 2;
 }
 
-#add-overlay #add-form div {
+/* book status/read checkbox */
+
+#overlay #form div {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-/* book status/read checkbox */
-
-#add-overlay #add-form input[type="checkbox"] {
+#overlay #form input[type="checkbox"] {
   height: 1rem;
   width: 1rem;
 }
 
-#add-overlay #add-form #add-book {
+#overlay #form #add {
   appearance: none;
   cursor: pointer;
   border: none;
@@ -320,8 +336,8 @@ body {
   color: var(--text-col);
 }
 
-#add-overlay #add-form #add-book:focus-visible,
-#add-overlay #add-form #add-book:hover {
+#overlay #form #add:focus-visible,
+#overlay #form #add:hover {
   border-color: var(--text-col);
 }
 

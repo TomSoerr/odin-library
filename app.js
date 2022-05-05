@@ -1,107 +1,144 @@
-/* eslint-disable no-param-reassign */
 const content = document.getElementById('content');
-const btnPopupForm = document.getElementById('add');
-const overlayPopupForm = document.getElementById('add-overlay');
-const btnCancelBook = document.getElementById('cancel-book');
-const input = {
-  title: document.getElementById('book-title'),
-  author: document.getElementById('book-author'),
-  pages: document.getElementById('book-pages'),
-  checkbox: document.getElementById('book-read'),
+const popup = {
+  showBtn: document.getElementById('show'),
+  overlay: document.getElementById('overlay'),
+  closeBtn: document.getElementById('close'),
+  addBtn: document.getElementById('add'),
+  input: {
+    title: document.getElementById('book-title'),
+    author: document.getElementById('book-author'),
+    pages: document.getElementById('book-pages'),
+    checkbox: document.getElementById('book-read'),
+  },
 };
-const btnAddBook = document.getElementById('add-book');
-const myLibrary = [];
+let idCounter = 0;
+let myLibrary = [];
 
 const Book = function Book(title, author, pages, read) {
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.read = read;
+  this.id = idCounter;
+  idCounter += 1;
 };
 
-const addBookToLibrary = function addBookToLibrary(book) {
-  myLibrary.push(book);
-};
-
-const buildLibraryOnPage = function buildLibrary() {
+const displayLibrary = function displayLibraryOnPage() {
   // clear content for new build
   document.querySelectorAll('.book').forEach((book) => book.remove());
   document.querySelectorAll('#content hr:not(:first-of-type)').forEach(
     (hr) => hr.remove(),
   );
-  const addBookToPage = function addBook(read, title, author, pages) {
+
+  // loop through myLibrary and display each book
+  myLibrary.forEach((book) => {
+    const div = document.createElement('div');
+    div.classList.add('book');
+    div.id = book.id;
+
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
-    checkbox.checked = read;
+    checkbox.checked = book.read;
     const pTitle = document.createElement('p');
-    pTitle.textContent = title;
+    pTitle.textContent = book.title;
     const pAuthor = document.createElement('p');
-    pAuthor.textContent = author;
+    pAuthor.textContent = book.author;
     const pPages = document.createElement('p');
-    pPages.textContent = pages;
+    pPages.textContent = book.pages;
     const btnDel = document.createElement('button');
     btnDel.textContent = 'Delete';
 
-    const div = document.createElement('div');
-    div.classList.add('book');
     div.append(checkbox, pTitle, pAuthor, pPages, btnDel);
-
     const hr = document.createElement('hr');
     content.append(div, hr);
-  };
-
-  myLibrary.forEach((book) => {
-    addBookToPage(book.read, book.title, book.author, book.pages);
   });
+
+  // checkbox listener
+  const readCheckbox = [...document.querySelectorAll('.book input')];
+  readCheckbox.forEach((checkbox) => {
+    checkbox.addEventListener('change', (e) => {
+      myLibrary = myLibrary.map((book) => {
+        if (book.id === Number(e.target.parentNode.id)) {
+          book.read = e.target.checked;
+        }
+        return book;
+      });
+    });
+  });
+
+  // delete book button listener
+  const deleteBtn = [...document.querySelectorAll('.book button')];
+  deleteBtn.forEach((btn) => btn.addEventListener('click', (e) => {
+    myLibrary = myLibrary.filter(
+      (book) => book.id !== Number(e.target.parentElement.id),
+    );
+    displayLibrary();
+  }));
 };
 
 // add example books to library
-
-addBookToLibrary(
+myLibrary.push(
   new Book('The Hobbit', 'J.R.R. Tolkien', 295, true),
 );
-addBookToLibrary(
+myLibrary.push(
   new Book('The Catcher in the Rye', 'J.D. Salinger', 220, false),
 );
 
-buildLibraryOnPage();
+displayLibrary();
 
-btnPopupForm.addEventListener('click', () => {
-  overlayPopupForm.style.display = 'grid';
+// add new book to library
+popup.showBtn.addEventListener('click', () => {
+  popup.overlay.style.display = 'grid';
 });
 
-btnCancelBook.addEventListener('click', () => {
-  overlayPopupForm.style.display = null;
+popup.closeBtn.addEventListener('click', () => {
+  popup.overlay.style.display = null;
 });
 
-btnAddBook.addEventListener('click', () => {
-  if (!input.title.value) {
-    input.title.placeholder = 'Please enter title';
-  } else if (!input.author.value) {
-    input.author.placeholder = 'Please enter author';
-  } else if (!input.pages.value) {
-    input.pages.placeholder = 'Please enter pages';
-  } else if (Number.isNaN(input.pages.value)) {
-    input.pages.placeholder = 'Please enter number';
-  } else if (input.pages.value < 0) {
-    input.pages.placeholder = 'Please enter positive number';
+popup.addBtn.addEventListener('click', () => {
+  let valid = true;
+  if (!popup.input.title.value) {
+    popup.input.title.parentElement.dataset.msg = 'Please enter a title';
+    valid = false;
   } else {
+    popup.input.title.parentElement.dataset.msg = '';
+  }
+  if (!popup.input.author.value) {
+    popup.input.author.parentElement.dataset.msg = 'Please enter a author';
+    valid = false;
+  } else {
+    popup.input.author.parentElement.dataset.msg = '';
+  }
+  if (!popup.input.pages.value) {
+    popup.input.pages.parentElement.dataset.msg = 'Please enter a page number';
+    valid = false;
+  } else if (isNaN(popup.input.pages.value)) {
+    popup.input.pages.parentElement.dataset.msg = 'Please enter valid number';
+    valid = false;
+  } else if (popup.input.pages.value < 0) {
+    popup.input.pages.parentElement.dataset.msg = 'Please enter positive number';
+    valid = false;
+  } else {
+    popup.input.pages.parentElement.dataset.msg = '';
+  }
+  if (valid) {
     const book = new Book(
-      input.title.value,
-      input.author.value,
-      input.pages.value,
-      input.checkbox.checked,
+      popup.input.title.value,
+      popup.input.author.value,
+      popup.input.pages.value,
+      popup.input.checkbox.checked,
     );
-    addBookToLibrary(book);
-    buildLibraryOnPage();
-    Object.values(input).forEach((x) => {
-      if (x !== input.checkbox) {
+    myLibrary.push(book);
+    displayLibrary();
+    Object.values(popup.input).forEach((x) => {
+      if (x !== popup.input.checkbox) {
         x.value = '';
-        x.placeholder = '';
+        x.parentElement.dataset.msg = '';
       } else {
         x.checked = false;
       }
     });
-    overlayPopupForm.style.display = null;
+    popup.overlay.style.display = null;
   }
 });
+
