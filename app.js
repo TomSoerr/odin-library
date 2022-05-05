@@ -1,4 +1,11 @@
 const content = document.getElementById('content');
+const listHeader = {
+  read: document.getElementById('read'),
+  title: document.getElementById('title'),
+  author: document.getElementById('author'),
+  pages: document.getElementById('pages'),
+  added: document.getElementById('added'),
+};
 const popup = {
   showBtn: document.getElementById('show'),
   overlay: document.getElementById('overlay'),
@@ -11,9 +18,12 @@ const popup = {
     checkbox: document.getElementById('book-read'),
   },
 };
+
 let idCounter = 0;
 let myLibrary = [];
+let sortBy = ['added', 'desc']; // read, title, author, pages, added || asc and desc
 
+// book constructor
 const Book = function Book(title, author, pages, read) {
   this.title = title;
   this.author = author;
@@ -23,6 +33,41 @@ const Book = function Book(title, author, pages, read) {
   idCounter += 1;
 };
 
+// sort myLibrary
+const sortLibrary = function sortLibrary() {
+  if (sortBy[0] === 'added') { // ascending
+    myLibrary.sort((a, b) => b.id - a.id);
+  } else if (sortBy[0] === 'pages') {
+    myLibrary.sort((a, b) => a.pages - b.pages);
+  } else if (sortBy[0] === 'author') {
+    myLibrary.sort((a, b) => (
+      (a.author.toLowerCase() > b.author.toLowerCase()) ? 1 : -1
+    ));
+  } else if (sortBy[0] === 'title') {
+    myLibrary.sort((a, b) => (
+      (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1
+    ));
+  } else if (sortBy[0] === 'read') {
+    // for the case that all book are read
+    // let allTheSame = true;
+    // myLibrary.reduce((previous, current) => {
+    //   if (current.read !== previous) allTheSame = false;
+    //   return current.read;
+    // });
+    ///////////
+    myLibrary.sort((a, b) => ((a.read > b.read) ? -1 : 1));
+  }
+  if (sortBy[1] === 'desc') myLibrary.reverse();
+};
+
+// remove all checked classes
+const rmvAll = function removeAllCheckedClasses(id) {
+  document.querySelectorAll('#content label + button').forEach((btn) => {
+    if (btn.id !== id) btn.className = '';
+  });
+};
+
+// display library if something changed
 const displayLibrary = function displayLibraryOnPage() {
   // clear content for new build
   document.querySelectorAll('.book').forEach((book) => book.remove());
@@ -63,6 +108,8 @@ const displayLibrary = function displayLibraryOnPage() {
         }
         return book;
       });
+      sortLibrary();
+      displayLibrary();
     });
   });
 
@@ -85,6 +132,27 @@ myLibrary.push(
 );
 
 displayLibrary();
+
+// sort list header
+Object.values(listHeader).forEach((header) => {
+  header.addEventListener('click', (e) => {
+    rmvAll(e.target.id);
+    if (!e.target.classList.value) {
+      e.target.className = 'checked-1';
+      sortBy = [e.target.id, 'desc'];
+    } else if (e.target.className === 'checked-1') {
+      e.target.className = 'checked-2';
+      sortBy = [e.target.id, 'asc'];
+    } else if (e.target.className === 'checked-2') {
+      e.target.className = 'checked-1';
+      sortBy = [e.target.id, 'desc'];
+    } else {
+      console.error('error');
+    }
+    sortLibrary();
+    displayLibrary();
+  });
+});
 
 // add new book to library
 popup.showBtn.addEventListener('click', () => {
@@ -141,4 +209,3 @@ popup.addBtn.addEventListener('click', () => {
     popup.overlay.style.display = null;
   }
 });
-
