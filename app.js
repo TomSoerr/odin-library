@@ -4,7 +4,7 @@ const listHeader = {
   title: document.getElementById('title'),
   author: document.getElementById('author'),
   pages: document.getElementById('pages'),
-  added: document.getElementById('added'),
+  id: document.getElementById('id'),
 };
 const popup = {
   showBtn: document.getElementById('show'),
@@ -21,7 +21,7 @@ const popup = {
 
 let idCounter = 0;
 let myLibrary = [];
-let sortBy = ['added', 'desc']; // read, title, author, pages, added || asc and desc
+let sortBy = ['id', 'desc']; // read, title, author, pages, id || asc and desc
 
 // book constructor
 const Book = function Book(title, author, pages, read) {
@@ -33,9 +33,21 @@ const Book = function Book(title, author, pages, read) {
   idCounter += 1;
 };
 
+// checks if all the values of one type are the same
+const checkAllTheSame = function checkIfAllTheSame() {
+  let allTheSame = true;
+  myLibrary.reduce((previous, current) => {
+    if (previous === 'init') return current[sortBy[0]];
+    if (current[sortBy[0]] !== previous) allTheSame = false;
+    return current[sortBy[0]];
+  }, 'init');
+  return allTheSame;
+};
+
 // sort myLibrary
 const sortLibrary = function sortLibrary() {
-  if (sortBy[0] === 'added') { // ascending
+  if (checkAllTheSame()) return;
+  if (sortBy[0] === 'id') { // ascending
     myLibrary.sort((a, b) => b.id - a.id);
   } else if (sortBy[0] === 'pages') {
     myLibrary.sort((a, b) => a.pages - b.pages);
@@ -48,14 +60,7 @@ const sortLibrary = function sortLibrary() {
       (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1
     ));
   } else if (sortBy[0] === 'read') {
-    // for the case that all book are read
-    // let allTheSame = true;
-    // myLibrary.reduce((previous, current) => {
-    //   if (current.read !== previous) allTheSame = false;
-    //   return current.read;
-    // });
-    ///////////
-    myLibrary.sort((a, b) => ((a.read > b.read) ? -1 : 1));
+    myLibrary.sort((a, b) => ((a.read < b.read) ? -1 : 1));
   }
   if (sortBy[1] === 'desc') myLibrary.reverse();
 };
@@ -130,7 +135,6 @@ myLibrary.push(
 myLibrary.push(
   new Book('The Catcher in the Rye', 'J.D. Salinger', 220, false),
 );
-
 displayLibrary();
 
 // sort list header
@@ -146,8 +150,6 @@ Object.values(listHeader).forEach((header) => {
     } else if (e.target.className === 'checked-2') {
       e.target.className = 'checked-1';
       sortBy = [e.target.id, 'desc'];
-    } else {
-      console.error('error');
     }
     sortLibrary();
     displayLibrary();
