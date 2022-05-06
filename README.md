@@ -2,13 +2,18 @@
 ![preview gif](./media/prev.gif) 
 
 ## Description
-In this project from “The Odin Project” I build a small library app  <br>
-This project has:
+In this project from “The Odin Project” I build a small library app.  <br>
+This app can:
+- add a book to the library,
+- delete a book from the library,
+- sort the library by:
+  - reading status,
+  - title,
+  - author,
+  - pages and
+  - when it was added to the library.
 
-- ...
-- ...
-
-...
+If the page is reloaded, the library is not lost.
 
 ## Links
 - [Live Preview](https://tomsoerr.github.io/odin-library/)
@@ -16,4 +21,4 @@ This project has:
 - See my next [Project]()
 
 ## Notes
-For the storage I use ...
+For the storage I use localStorage.

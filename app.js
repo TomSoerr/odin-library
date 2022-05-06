@@ -74,6 +74,10 @@ const rmvAll = function removeAllCheckedClasses(id) {
 
 // display library if something changed
 const displayLibrary = function displayLibraryOnPage() {
+  // update localStorage
+  localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
+  localStorage.setItem('sortBy', JSON.stringify(sortBy));
+
   // clear content for new build
   document.querySelectorAll('.book').forEach((book) => book.remove());
   document.querySelectorAll('#content hr:not(:first-of-type)').forEach(
@@ -127,15 +131,6 @@ const displayLibrary = function displayLibraryOnPage() {
     displayLibrary();
   }));
 };
-
-// add example books to library
-myLibrary.push(
-  new Book('The Hobbit', 'J.R.R. Tolkien', 295, true),
-);
-myLibrary.push(
-  new Book('The Catcher in the Rye', 'J.D. Salinger', 220, false),
-);
-displayLibrary();
 
 // sort list header
 Object.values(listHeader).forEach((header) => {
@@ -211,3 +206,26 @@ popup.addBtn.addEventListener('click', () => {
     popup.overlay.style.display = null;
   }
 });
+
+// on page load
+const tmp1 = localStorage.getItem('myLibrary');
+const tmp2 = localStorage.getItem('sortBy');
+if (tmp1) {
+  myLibrary = JSON.parse(tmp1);
+} else {
+  myLibrary.push(
+    new Book('The Hobbit', 'J.R.R. Tolkien', 295, true),
+  );
+  myLibrary.push(
+    new Book('The Catcher in the Rye', 'J.D. Salinger', 220, false),
+  );
+  localStorage.setItem('myLibrary', JSON.stringify(myLibrary));
+}
+if (tmp2) sortBy = JSON.parse(tmp2);
+
+listHeader[sortBy[0]].classList.add(
+  (sortBy[1] === 'desc') ? 'checked-1' : 'checked-2',
+);
+
+sortLibrary();
+displayLibrary();
