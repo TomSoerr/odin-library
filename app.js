@@ -23,14 +23,16 @@ let idCounter = 0;
 let myLibrary = [];
 let sortBy = ['id', 'desc']; // read, title, author, pages, id || asc and desc
 
-// book constructor
-const Book = function Book(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-  this.id = idCounter;
-  idCounter += 1;
+// book -constructor- class
+const Book = class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+    this.id = idCounter;
+    idCounter += 1;
+  }
 };
 
 // checks if all the values of one type are the same
