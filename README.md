@@ -18,7 +18,7 @@ If the page is reloaded, the library is not lost.
 ## Links
 - [Live Preview](https://tomsoerr.github.io/odin-library/)
 - Link to the [Assignment](https://www.theodinproject.com/lessons/node-path-javascript-library)
-- See my next [Project](https://github.com/TomSoerr/odin-tic-tac-toe/tree/main)
+- See my next [Project](https://github.com/TomSoerr/odin-tic-tac-toe/)
 
 ## Notes
 For the storage I use localStorage.
